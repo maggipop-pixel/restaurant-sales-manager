@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurante - Gestión de Clientes y Ventas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .logo-placeholder {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logo-placeholder:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .restaurant-name {
+            font-size: 2.5em;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            display: inline-block;
+        }
+
+        .restaurant-name:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .restaurant-name-input {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .restaurant-name-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 3px solid #1976d2;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            min-width: 150px;
+        }
+
+        .tab-button:hover {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .tab-button.active {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-bottom: 3px solid #1976d2;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-container {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #bbdefb;
+        }
+
+        .form-container h2 {
+            color: #1976d2;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bbdefb;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-secondary {
+            background: #42a5f5;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #1e88e5;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+            padding: 12px 30px;
+            margin-right: 10px;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9em;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-edit {
+            background: #28a745;
+            color: white;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+
+        .btn-edit:hover {
+            background: #218838;
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bbdefb;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #1976d2;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        thead {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #bbdefb;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f5f5f5;
+        }
+
+        tbody tr:hover {
+            background: #e3f2fd;
+            transform: scale(1.01);
+        }
+
+        #clientes-list tbody tr:nth-child(odd) {
+            background: white;
+        }
+
+        #clientes-list tbody tr:nth-child(even) {
+            background: #f5f5f5;
+        }
+
+        #clientes-list tbody tr:hover {
+            background: #e3f2fd;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.3);
+        }
+
+        .stat-card h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                width: 100%;
+                border-bottom: 1px solid #bbdefb;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .total-sales {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1976d2;
+            border: 2px solid #bbdefb;
+        }
+
+        footer {
+            background: #1976d2;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-container h3 {
+            color: #1976d2;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .chart {
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            gap: 10px;
+            padding: 20px;
+            border-bottom: 2px solid #bbdefb;
+            border-left: 2px solid #bbdefb;
+        }
+
+        .chart-bar {
+            flex: 1;
+            background: linear-gradient(to top, #1976d2, #42a5f5);
+            border-radius: 5px 5px 0 0;
+            min-width: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .chart-bar:hover {
+            opacity: 0.8;
+            transform: scaleY(1.05);
+        }
+
+        .chart-bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8em;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .chart-bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #1976d2;
+            white-space: nowrap;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group input:invalid:not(:placeholder-shown),
+        .form-group select:invalid:not(:placeholder-shown),
+        .form-group textarea:invalid:not(:placeholder-shown) {
+            border-color: #dc3545;
+        }
+
+        .form-group input:invalid:not(:placeholder-shown) + .error-message,
+        .form-group select:invalid:not(:placeholder-shown) + .error-message,
+        .form-group textarea:invalid:not(:placeholder-shown) + .error-message {
+            display: block;
+        }
+
+        .help-section {
+            background: #e3f2fd;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #bbdefb;
+        }
+
+        .help-section h2 {
+            color: #1976d2;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .help-section h3 {
+            color: #1976d2;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .help-section ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .help-section li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .help-section code {
+            background: rgba(25, 118, 210, 0.1);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <div class="logo-placeholder" onclick="document.getElementById('logo-upload').click()" title="Haz clic para cambiar el logo">
+                    🍽️
+                </div>
+                <input type="file" id="logo-upload" accept="image/*" style="display: none;" onchange="handleLogoUpload(event)">
+                <div>
+                    <span class="restaurant-name" id="restaurant-name-display" onclick="editRestaurantName()">Mi Restaurante</span>
+                    <input type="text" class="restaurant-name-input hidden" id="restaurant-name-input" 
+                           placeholder="Nombre del restaurante" 
+                           onblur="saveRestaurantName()" 
+                           onkeypress="if(event.key==='Enter') saveRestaurantName()">
+                </div>
+            </div>
+            <p>Gestión de Clientes y Ventas</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('clientes')">👥 Clientes</button>
+            <button class="tab-button" onclick="showTab('ventas')">💰 Ventas</button>
+            <button class="tab-button" onclick="showTab('reportes')">📊 Reportes</button>
+            <button class="tab-button" onclick="showTab('ayuda')">❓ Ayuda</button>
+        </div>
+
+        <!-- TAB CLIENTES -->
+        <div id="clientes" class="tab-content active">
+            <div class="form-container">
+                <h2 id="form-client-title">Agregar Cliente</h2>
+                <form id="cliente-form">
+                    <input type="hidden" id="cliente-id">
+                    <div class="form-group">
+                        <label for="cliente-nombre">Nombre *</label>
+                        <input type="text" id="cliente-nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-telefono">Teléfono *</label>
+                        <input type="tel" id="cliente-telefono" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-email">Email</label>
+                        <input type="email" id="cliente-email">
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-cumpleanos">Cumpleaños</label>
+                        <input type="date" id="cliente-cumpleanos">
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente-notas">Notas</label>
+                        <textarea id="cliente-notas"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+                    <button type="button" class="btn btn-secondary hidden" id="cancel-edit-client" onclick="cancelEditClient()">Cancelar</button>
+                </form>
+            </div>
+
+            <div class="search-box">
+                <input type="text" id="search-client" placeholder="🔍 Buscar cliente por nombre..." onkeyup="searchClients()">
+            </div>
+
+            <div id="clientes-list"></div>
+        </div>
+
+        <!-- TAB VENTAS -->
+        <div id="ventas" class="tab-content">
+            <div class="form-container">
+                <h2>Agregar Venta</h2>
+                <form id="venta-form">
+                    <div class="form-group">
+                        <label for="venta-cliente">Cliente *</label>
+                        <select id="venta-cliente" required>
+                            <option value="">Seleccione un cliente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="venta-fecha">Fecha *</label>
+                        <input type="date" id="venta-fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="venta-monto">Monto ($) *</label>
+                        <input type="number" id="venta-monto" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="venta-productos">Productos / Descripción *</label>
+                        <textarea id="venta-productos" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="venta-delivery">Código de Delivery</label>
+                        <input type="text" id="venta-delivery" placeholder="Ej: DEL-12345">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Venta</button>
+                </form>
+            </div>
+
+            <div class="total-sales">
+                Total de Ventas: $<span id="total-ventas">0.00</span>
+                <button class="btn btn-success" onclick="exportToExcel()" style="margin-top: 10px;">📊 Exportar Ventas a CSV</button>
+            </div>
+
+            <div id="ventas-list"></div>
+        </div>
+
+        <!-- TAB REPORTES -->
+        <div id="reportes" class="tab-content">
+            <div class="stats-container">
+                <div class="stat-card">
+                    <h3>Ventas del Día</h3>
+                    <div class="value" id="ventas-dia">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Ventas del Mes</h3>
+                    <div class="value" id="ventas-mes">$0.00</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Cliente Destacado</h3>
+                    <div class="value" style="font-size: 1.2em;" id="cliente-destacado">N/A</div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h3>Ventas por Día (Últimos 7 días)</h3>
+                <div id="chart-container" class="chart"></div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-success" onclick="exportToExcel()">📊 Exportar Ventas a CSV</button>
+            </div>
+        </div>
+
+        <!-- TAB AYUDA -->
+        <div id="ayuda" class="tab-content">
+            <div class="help-section">
+                <h2>📖 Guía de Uso</h2>
+                
+                <h3>👥 Gestión de Clientes</h3>
+                <ul>
+                    <li><strong>Agregar Cliente:</strong> Completa el formulario con nombre y teléfono (obligatorios), email, cumpleaños y notas opcionales.</li>
+                    <li><strong>Editar Cliente:</strong> Haz clic en el botón "Editar" de cualquier cliente para modificar sus datos.</li>
+                    <li><strong>Eliminar Cliente:</strong> Usa el botón "Eliminar" (se pedirá confirmación). Esto también eliminará las ventas asociadas.</li>
+                    <li><strong>Buscar:</strong> Usa el cuadro de búsqueda para encontrar clientes por nombre.</li>
+                </ul>
+
+                <h3>💰 Gestión de Ventas</h3>
+                <ul>
+                    <li><strong>Agregar Venta:</strong> Selecciona un cliente, ingresa fecha, monto y descripción de productos. El código de delivery es opcional.</li>
+                    <li><strong>Eliminar Venta:</strong> Usa el botón "Eliminar" (se pedirá confirmación).</li>
+                    <li><strong>Exportar:</strong> El botón "Exportar Ventas a CSV" descarga todas las ventas en formato CSV para Excel.</li>
+                </ul>
+
+                <h3>📊 Reportes</h3>
+                <ul>
+                    <li><strong>Ventas del Día:</strong> Muestra el total de ventas del día actual.</li>
+                    <li><strong>Ventas del Mes:</strong> Muestra el total de ventas del mes actual.</li>
+                    <li><strong>Cliente Destacado:</strong> Muestra el cliente con más compras registradas.</li>
+                    <li><strong>Gráfica:</strong> Visualiza las ventas de los últimos 7 días en un gráfico de barras.</li>
+                </ul>
+
+                <h3>⚙️ Personalización</h3>
+                <ul>
+                    <li><strong>Logo:</strong> Haz clic en el logo placeholder para subir tu propio logo.</li>
+                    <li><strong>Nombre del Restaurante:</strong> Haz clic en el nombre en el header para editarlo.</li>
+                </ul>
+
+                <h3>💾 Almacenamiento</h3>
+                <ul>
+                    <li>Todos los datos se guardan automáticamente en el navegador (localStorage).</li>
+                    <li>Los datos persisten incluso si cierras el navegador.</li>
+                    <li>Para limpiar los datos, usa las herramientas de desarrollador del navegador.</li>
+                </ul>
+
+                <h3>📱 Compatibilidad</h3>
+                <ul>
+                    <li>La aplicación es completamente responsive y funciona en dispositivos móviles, tablets y computadoras.</li>
+                    <li>Funciona en todos los navegadores modernos (Chrome, Firefox, Safari, Edge).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Developed by <strong id="developer-name" onclick="editDeveloperName()" style="cursor: pointer; text-decoration: underline;">Luz Zavala</strong></p>
+        <input type="text" id="developer-name-input" class="hidden" 
+               style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5); 
+                      color: white; padding: 5px; border-radius: 3px; text-align: center;"
+               onblur="saveDeveloperName()" 
+               onkeypress="if(event.key==='Enter') saveDeveloperName()">
+        <p style="font-size: 0.9em; margin-top: 5px; opacity: 0.9;">Sistema de Gestión de Restaurante v1.0</p>
+    </footer>
+
+    <script>
+        // Inicialización
+        let editClientId = null;
+
+        // Establecer fecha actual por defecto
+        document.getElementById('venta-fecha').valueAsDate = new Date();
+
+        // Cargar nombre del restaurante
+        const savedName = localStorage.getItem('restaurantName');
+        if (savedName) {
+            document.getElementById('restaurant-name-display').textContent = savedName;
+        }
+
+        // Cargar logo
+        const savedLogo = localStorage.getItem('restaurantLogo');
+        if (savedLogo) {
+            document.querySelector('.logo-placeholder').style.backgroundImage = `url(${savedLogo})`;
+            document.querySelector('.logo-placeholder').style.backgroundSize = 'cover';
+            document.querySelector('.logo-placeholder').style.backgroundPosition = 'center';
+            document.querySelector('.logo-placeholder').textContent = '';
+        }
+
+        // Cargar nombre del desarrollador
+        const savedDeveloper = localStorage.getItem('developerName');
+        if (savedDeveloper) {
+            document.getElementById('developer-name').textContent = savedDeveloper;
+        }
+
+        // Cargar datos al iniciar
+        loadClients();
+        loadSales();
+        updateReports();
+        loadClientOptions();
+        drawChart();
+
+        // ========== GESTIÓN DE LOGO Y NOMBRE ==========
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const logoUrl = e.target.result;
+                    localStorage.setItem('restaurantLogo', logoUrl);
+                    const logoPlaceholder = document.querySelector('.logo-placeholder');
+                    logoPlaceholder.style.backgroundImage = `url(${logoUrl})`;
+                    logoPlaceholder.style.backgroundSize = 'cover';
+                    logoPlaceholder.style.backgroundPosition = 'center';
+                    logoPlaceholder.textContent = '';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function editRestaurantName() {
+            const display = document.getElementById('restaurant-name-display');
+            const input = document.getElementById('restaurant-name-input');
+            input.value = display.textContent;
+            display.classList.add('hidden');
+            input.classList.remove('hidden');
+            input.focus();
+        }
+
+        function saveRestaurantName() {
+            const display = document.getElementById('restaurant-name-display');
+            const input = document.getElementById('restaurant-name-input');
+            const newName = input.value.trim() || 'Mi Restaurante';
+            display.textContent = newName;
+            localStorage.setItem('restaurantName', newName);
+            display.classList.remove('hidden');
+            input.classList.add('hidden');
+        }
+
+        function editDeveloperName() {
+            const display = document.getElementById('developer-name');
+            const input = document.getElementById('developer-name-input');
+            input.value = display.textContent;
+            display.classList.add('hidden');
+            input.classList.remove('hidden');
+            input.focus();
+        }
+
+        function saveDeveloperName() {
+            const display = document.getElementById('developer-name');
+            const input = document.getElementById('developer-name-input');
+            const newName = input.value.trim() || 'Luz Zavala';
+            display.textContent = newName;
+            localStorage.setItem('developerName', newName);
+            display.classList.remove('hidden');
+            input.classList.add('hidden');
+        }
+
+        // Función para cambiar de pestaña
+        function showTab(tabName) {
+            // Ocultar todos los contenidos
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remover clase active de todos los botones
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Mostrar el contenido seleccionado
+            document.getElementById(tabName).classList.add('active');
+
+            // Activar el botón correspondiente
+            event.target.classList.add('active');
+
+            // Actualizar reportes si se muestra la pestaña
+            if (tabName === 'reportes') {
+                updateReports();
+                drawChart();
+            }
+
+            // Actualizar opciones de clientes si se muestra la pestaña de ventas
+            if (tabName === 'ventas') {
+                loadClientOptions();
+            }
+        }
+
+        // ========== GESTIÓN DE CLIENTES ==========
+
+        // Validación de formularios
+        function validateForm(formId) {
+            const form = document.getElementById(formId);
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#dc3545';
+                } else {
+                    field.style.borderColor = '#bbdefb';
+                }
+            });
+
+            // Validación específica para email
+            const emailField = form.querySelector('input[type="email"]');
+            if (emailField && emailField.value) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailField.value)) {
+                    isValid = false;
+                    emailField.style.borderColor = '#dc3545';
+                    alert('Por favor, ingresa un email válido');
+                }
+            }
+
+            // Validación para teléfono
+            const telField = form.querySelector('input[type="tel"]');
+            if (telField && telField.value) {
+                const telRegex = /^[\d\s\-\+\(\)]+$/;
+                if (!telRegex.test(telField.value)) {
+                    isValid = false;
+                    telField.style.borderColor = '#dc3545';
+                    alert('Por favor, ingresa un teléfono válido');
+                }
+            }
+
+            return isValid;
+        }
+
+        // Guardar cliente
+        document.getElementById('cliente-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!validateForm('cliente-form')) {
+                return;
+            }
+
+            const cliente = {
+                id: editClientId || Date.now().toString(),
+                nombre: document.getElementById('cliente-nombre').value.trim(),
+                telefono: document.getElementById('cliente-telefono').value.trim(),
+                email: document.getElementById('cliente-email').value.trim(),
+                cumpleanos: document.getElementById('cliente-cumpleanos').value,
+                notas: document.getElementById('cliente-notas').value.trim()
+            };
+
+            const clientes = getClients();
+            
+            if (editClientId) {
+                const index = clientes.findIndex(c => c.id === editClientId);
+                if (index !== -1) {
+                    clientes[index] = cliente;
+                }
+            } else {
+                clientes.push(cliente);
+            }
+
+            localStorage.setItem('clientes', JSON.stringify(clientes));
+            
+            document.getElementById('cliente-form').reset();
+            editClientId = null;
+            document.getElementById('form-client-title').textContent = 'Agregar Cliente';
+            document.getElementById('cancel-edit-client').classList.add('hidden');
+            
+            alert('Cliente guardado exitosamente');
+            loadClients();
+            loadClientOptions();
+        });
+
+        // Cargar clientes
+        function getClients() {
+            const clientes = localStorage.getItem('clientes');
+            return clientes ? JSON.parse(clientes) : [];
+        }
+
+        function loadClients() {
+            const clientes = getClients();
+            const clientesList = document.getElementById('clientes-list');
+
+            if (clientes.length === 0) {
+                clientesList.innerHTML = '<div class="empty-message">No hay clientes registrados</div>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Cumpleaños</th><th>Notas</th><th>Acciones</th></tr></thead><tbody>';
+
+            clientes.forEach(cliente => {
+                const cumpleanos = cliente.cumpleanos ? new Date(cliente.cumpleanos).toLocaleDateString('es-ES') : '-';
+                html += `
+                    <tr>
+                        <td>${cliente.nombre}</td>
+                        <td>${cliente.telefono}</td>
+                        <td>${cliente.email || '-'}</td>
+                        <td>${cumpleanos}</td>
+                        <td>${cliente.notas || '-'}</td>
+                        <td class="actions">
+                            <button class="btn btn-edit" onclick="editClient('${cliente.id}')">Editar</button>
+                            <button class="btn btn-danger" onclick="deleteClient('${cliente.id}')">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            clientesList.innerHTML = html;
+        }
+
+        // Editar cliente
+        function editClient(id) {
+            const clientes = getClients();
+            const cliente = clientes.find(c => c.id === id);
+
+            if (cliente) {
+                document.getElementById('cliente-id').value = cliente.id;
+                document.getElementById('cliente-nombre').value = cliente.nombre;
+                document.getElementById('cliente-telefono').value = cliente.telefono;
+                document.getElementById('cliente-email').value = cliente.email || '';
+                document.getElementById('cliente-cumpleanos').value = cliente.cumpleanos || '';
+                document.getElementById('cliente-notas').value = cliente.notas || '';
+
+                editClientId = id;
+                document.getElementById('form-client-title').textContent = 'Editar Cliente';
+                document.getElementById('cancel-edit-client').classList.remove('hidden');
+
+                // Scroll al formulario
+                document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Cancelar edición
+        function cancelEditClient() {
+            document.getElementById('cliente-form').reset();
+            editClientId = null;
+            document.getElementById('form-client-title').textContent = 'Agregar Cliente';
+            document.getElementById('cancel-edit-client').classList.add('hidden');
+        }
+
+        // Eliminar cliente
+        function deleteClient(id) {
+            const clientes = getClients();
+            const cliente = clientes.find(c => c.id === id);
+            const nombre = cliente ? cliente.nombre : 'este cliente';
+            
+            if (confirm(`¿Estás seguro de que deseas eliminar a ${nombre}?\n\nEsta acción también eliminará todas las ventas asociadas a este cliente y no se puede deshacer.`)) {
+                const filtered = clientes.filter(c => c.id !== id);
+                localStorage.setItem('clientes', JSON.stringify(filtered));
+                
+                // Eliminar también las ventas asociadas
+                const ventas = getSales();
+                const ventasFiltered = ventas.filter(v => v.clienteId !== id);
+                localStorage.setItem('ventas', JSON.stringify(ventasFiltered));
+                
+                alert('Cliente eliminado exitosamente');
+                loadClients();
+                loadSales();
+                loadClientOptions();
+                updateReports();
+            }
+        }
+
+        // Buscar clientes
+        function searchClients() {
+            const searchTerm = document.getElementById('search-client').value.toLowerCase();
+            const clientes = getClients();
+            const filtered = clientes.filter(c => 
+                c.nombre.toLowerCase().includes(searchTerm)
+            );
+
+            const clientesList = document.getElementById('clientes-list');
+
+            if (filtered.length === 0) {
+                clientesList.innerHTML = '<div class="empty-message">No se encontraron clientes</div>';
+                return;
+            }
+
+            let html = '<table><thead><tr><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Cumpleaños</th><th>Notas</th><th>Acciones</th></tr></thead><tbody>';
+
+            filtered.forEach(cliente => {
+                const cumpleanos = cliente.cumpleanos ? new Date(cliente.cumpleanos).toLocaleDateString('es-ES') : '-';
+                html += `
+                    <tr>
+                        <td>${cliente.nombre}</td>
+                        <td>${cliente.telefono}</td>
+                        <td>${cliente.email || '-'}</td>
+                        <td>${cumpleanos}</td>
+                        <td>${cliente.notas || '-'}</td>
+                        <td class="actions">
+                            <button class="btn btn-edit" onclick="editClient('${cliente.id}')">Editar</button>
+                            <button class="btn btn-danger" onclick="deleteClient('${cliente.id}')">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            clientesList.innerHTML = html;
+        }
+
+        // ========== GESTIÓN DE VENTAS ==========
+
+        // Cargar opciones de clientes en el dropdown
+        function loadClientOptions() {
+            const clientes = getClients();
+            const select = document.getElementById('venta-cliente');
+            
+            select.innerHTML = '<option value="">Seleccione un cliente</option>';
+            
+            clientes.forEach(cliente => {
+                const option = document.createElement('option');
+                option.value = cliente.id;
+                option.textContent = cliente.nombre;
+                select.appendChild(option);
+            });
+        }
+
+        // Guardar venta
+        document.getElementById('venta-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!validateForm('venta-form')) {
+                return;
+            }
+
+            const monto = parseFloat(document.getElementById('venta-monto').value);
+            if (monto <= 0) {
+                alert('El monto debe ser mayor a cero');
+                document.getElementById('venta-monto').style.borderColor = '#dc3545';
+                return;
+            }
+
+            const venta = {
+                id: Date.now().toString(),
+                clienteId: document.getElementById('venta-cliente').value,
+                clienteNombre: getClients().find(c => c.id === document.getElementById('venta-cliente').value)?.nombre || 'Cliente eliminado',
+                fecha: document.getElementById('venta-fecha').value,
+                monto: monto,
+                productos: document.getElementById('venta-productos').value.trim(),
+                delivery: document.getElementById('venta-delivery').value.trim()
+            };
+
+            const ventas = getSales();
+            ventas.push(venta);
+            localStorage.setItem('ventas', JSON.stringify(ventas));
+
+            document.getElementById('venta-form').reset();
+            document.getElementById('venta-fecha').valueAsDate = new Date();
+            
+            alert('Venta registrada exitosamente');
+            loadSales();
+            updateReports();
+        });
+
+        // Cargar ventas
+        function getSales() {
+            const ventas = localStorage.getItem('ventas');
+            return ventas ? JSON.parse(ventas) : [];
+        }
+
+        function loadSales() {
+            const ventas = getSales();
+            const ventasList = document.getElementById('ventas-list');
+            
+            // Calcular total
+            const total = ventas.reduce((sum, v) => sum + v.monto, 0);
+            document.getElementById('total-ventas').textContent = total.toFixed(2);
+
+            if (ventas.length === 0) {
+                ventasList.innerHTML = '<div class="empty-message">No hay ventas registradas</div>';
+                return;
+            }
+
+            // Ordenar por fecha (más reciente primero)
+            const ventasOrdenadas = [...ventas].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+            let html = '<table><thead><tr><th>Cliente</th><th>Fecha</th><th>Monto</th><th>Productos / Descripción</th><th>Código Delivery</th><th>Acciones</th></tr></thead><tbody>';
+
+            ventasOrdenadas.forEach(venta => {
+                const fecha = new Date(venta.fecha);
+                const fechaFormateada = fecha.toLocaleDateString('es-ES');
+                
+                html += `
+                    <tr>
+                        <td>${venta.clienteNombre}</td>
+                        <td>${fechaFormateada}</td>
+                        <td>$${venta.monto.toFixed(2)}</td>
+                        <td>${venta.productos}</td>
+                        <td>${venta.delivery || '-'}</td>
+                        <td class="actions">
+                            <button class="btn btn-danger" onclick="deleteSale('${venta.id}')">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            ventasList.innerHTML = html;
+        }
+
+        // Eliminar venta
+        function deleteSale(id) {
+            const ventas = getSales();
+            const venta = ventas.find(v => v.id === id);
+            
+            if (venta) {
+                const fecha = new Date(venta.fecha).toLocaleDateString('es-ES');
+                const monto = venta.monto.toFixed(2);
+                
+                if (confirm(`¿Estás seguro de que deseas eliminar esta venta?\n\nCliente: ${venta.clienteNombre}\nFecha: ${fecha}\nMonto: $${monto}\n\nEsta acción no se puede deshacer.`)) {
+                    const filtered = ventas.filter(v => v.id !== id);
+                    localStorage.setItem('ventas', JSON.stringify(filtered));
+                    alert('Venta eliminada exitosamente');
+                    loadSales();
+                    updateReports();
+                    drawChart();
+                }
+            }
+        }
+
+        // ========== REPORTES ==========
+
+        function updateReports() {
+            const ventas = getSales();
+            const now = new Date();
+            
+            // Ventas del día
+            const ventasDia = ventas.filter(v => {
+                const fechaVenta = new Date(v.fecha);
+                return fechaVenta.toDateString() === now.toDateString();
+            });
+            const totalDia = ventasDia.reduce((sum, v) => sum + v.monto, 0);
+            document.getElementById('ventas-dia').textContent = '$' + totalDia.toFixed(2);
+
+            // Ventas del mes
+            const ventasMes = ventas.filter(v => {
+                const fechaVenta = new Date(v.fecha);
+                return fechaVenta.getMonth() === now.getMonth() && 
+                       fechaVenta.getFullYear() === now.getFullYear();
+            });
+            const totalMes = ventasMes.reduce((sum, v) => sum + v.monto, 0);
+            document.getElementById('ventas-mes').textContent = '$' + totalMes.toFixed(2);
+
+            // Cliente con más compras
+            if (ventas.length === 0) {
+                document.getElementById('cliente-destacado').textContent = 'N/A';
+                return;
+            }
+
+            const comprasPorCliente = {};
+            ventas.forEach(venta => {
+                const clienteId = venta.clienteId || 'sin-cliente';
+                if (!comprasPorCliente[clienteId]) {
+                    comprasPorCliente[clienteId] = {
+                        nombre: venta.clienteNombre,
+                        cantidad: 0
+                    };
+                }
+                comprasPorCliente[clienteId].cantidad++;
+            });
+
+            let clienteDestacado = null;
+            let maxCompras = 0;
+
+            Object.values(comprasPorCliente).forEach(cliente => {
+                if (cliente.cantidad > maxCompras) {
+                    maxCompras = cliente.cantidad;
+                    clienteDestacado = cliente.nombre;
+                }
+            });
+
+            document.getElementById('cliente-destacado').textContent = 
+                clienteDestacado ? `${clienteDestacado} (${maxCompras})` : 'N/A';
+            
+            // Actualizar gráfica si está visible
+            if (document.getElementById('reportes').classList.contains('active')) {
+                drawChart();
+            }
+        }
+
+        // ========== GRÁFICA DE VENTAS ==========
+
+        function drawChart() {
+            const ventas = getSales();
+            const chartContainer = document.getElementById('chart-container');
+            
+            if (ventas.length === 0) {
+                chartContainer.innerHTML = '<div class="empty-message">No hay datos para mostrar</div>';
+                return;
+            }
+
+            // Obtener últimos 7 días
+            const today = new Date();
+            const last7Days = [];
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                last7Days.push(date);
+            }
+
+            // Agrupar ventas por día
+            const ventasPorDia = {};
+            last7Days.forEach(date => {
+                const dateStr = date.toISOString().split('T')[0];
+                ventasPorDia[dateStr] = 0;
+            });
+
+            ventas.forEach(venta => {
+                const fechaVenta = new Date(venta.fecha).toISOString().split('T')[0];
+                if (ventasPorDia.hasOwnProperty(fechaVenta)) {
+                    ventasPorDia[fechaVenta] += venta.monto;
+                }
+            });
+
+            // Encontrar el máximo para escalar la gráfica
+            const maxVenta = Math.max(...Object.values(ventasPorDia), 1);
+
+            // Crear barras
+            let html = '';
+            last7Days.forEach(date => {
+                const dateStr = date.toISOString().split('T')[0];
+                const monto = ventasPorDia[dateStr];
+                const height = (monto / maxVenta) * 100;
+                const fechaLabel = date.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' });
+                
+                html += `
+                    <div class="chart-bar" style="height: ${height}%" title="${fechaLabel}: $${monto.toFixed(2)}">
+                        <div class="chart-bar-value">$${monto.toFixed(2)}</div>
+                        <div class="chart-bar-label">${fechaLabel}</div>
+                    </div>
+                `;
+            });
+
+            chartContainer.innerHTML = html;
+        }
+
+        // ========== EXPORTAR A EXCEL ==========
+
+        function exportToExcel() {
+            const ventas = getSales();
+            
+            if (ventas.length === 0) {
+                alert('No hay ventas para exportar');
+                return;
+            }
+
+            // Ordenar por fecha
+            const ventasOrdenadas = [...ventas].sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+            // Crear contenido CSV
+            let csvContent = '\uFEFF'; // BOM para UTF-8
+            csvContent += 'Cliente,Fecha,Monto,Productos / Descripción,Código Delivery\n';
+
+            ventasOrdenadas.forEach(venta => {
+                const fecha = new Date(venta.fecha);
+                const fechaFormateada = fecha.toLocaleDateString('es-ES');
+                const cliente = venta.clienteNombre.replace(/,/g, ';');
+                const productos = venta.productos.replace(/,/g, ';').replace(/\n/g, ' ');
+                const delivery = venta.delivery || '';
+                csvContent += `"${cliente}","${fechaFormateada}",${venta.monto},"${productos}","${delivery}"\n`;
+            });
+
+            // Crear blob y descargar
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', `ventas_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
