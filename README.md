@@ -19,12 +19,14 @@ Complete web application to manage:
 - ✅ Data export to Excel
 - ✅ No monthly subscription costs
 - ✅ Customizable for specific needs
-- ✅ Built with AI assistance (Cursor AI)
+- ✅ Built with AI assistance (Claude + Cursor AI)
 
 ## 🛠️ Tech Stack
 
 - **Frontend:** HTML, CSS, JavaScript
-- **Backend:** [Your stack - Node.js, Python, etc.]
+- **Backend:** Backend: JavaScript (Vanilla)
+Database: LocalStorage (client-side)
+Development: Claude + Cursor AI for accelerated development
 - **Database:** [Your choice - SQLite, LocalStorage, etc.]
 - **Export:** ExcelJS for file generation
 - **Development:** Cursor AI for accelerated coding
